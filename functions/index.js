@@ -1,5 +1,5 @@
 const functions = require('firebase-functions');
-const uuid = require('uuid');
+const uuidv5 = require('uuidv5');
 const cors = require('cors')({ origin: true });
 const admin = require('firebase-admin');
 
@@ -21,7 +21,6 @@ exports.addUser = functions.https.onRequest((req, res) => {
         }
      
         const user = req.body
-        // user[id] =uuid()
         database.push( user );
        
     })
@@ -31,10 +30,11 @@ exports.updateUuid = functions.database.ref('/users/{usersId}/user')
     .onCreate((snapshot, context) => {
         // Grab the current value of what was written to the Realtime Database.
         const original = snapshot.val();
+
         console.log('updating', context.params.pushId, original);
-        const newUUID = uuid();
-        
+        const newUUID = uuidv5('dns', 'cocky-goldstine-75ff2c.netlify.com');
+
         return snapshot.ref.update(
-            {uuid:newUUID}
+            { uuid: newUUID }    
         );
     });
